@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hydra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #0e1522, #00616C);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .nav-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      background-color: rgb(17, 17, 17);
+      border: 1px solid rgba(255, 255, 255, 0.171);
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      gap: 8px;
+    }
+
+    .logo span {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #c3c3c3;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .main-content {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 100px;
+    }
+
+    small {
+      color: #7edfff;
+      font-weight: 400;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #c2c2c2;
+      font-weight: 300;
+      margin-bottom: 34px;
+      line-height: 1.6;
+      letter-spacing: 0.2px;
+    }
+
+    .buttons a {
+      display: inline-block;
+      padding: 14px 28px;
+      margin: 8px;
+      border-radius: 16px;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: 0.25s ease;
+    }
+
+    .btn-download {
+      background-color: #29b6f6;
+      color: #000;
+    }
+
+    .btn-github {
+      background-color: transparent;
+      color: #29b6f6;
+      border: 2px solid #29b6f6;
+    }
+
+    /* Imagem com quadrado preto centralizado atrás */
+    .frosted-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 60px;
+    }
+
+.Novo-estilo {
+     position: absolute;
+      width: 1351px;
+      height: 2700px;
+      background-color: rgb(17, 17, 17);
+      z-index: 0;
+      top: 800px;
+    }
+
+    .frosted-background {
+      position: absolute;
+      width: 1220px;
+      height: 920px;
+      background-color: rgba(0, 0, 0, 0.205);
+      z-index: 0;
+      border-radius: 16px;
+      border-color: #000;
+      border: 1px solid black;
+    }
+
+    .featured-image {
+      position: relative;
+      z-index: 1;
+      width: 1200px;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .Divisão-de-tela {
+ position: absolute;
+      width: 1351px;
+      height: 2px;
+      background-color: rgb(80, 80, 80);
+      z-index: 0;
+      top: 1600px;
+    }
+
+.Quem-nos-somos {
+  position: absolute;
+  width: 1351px;
+  height: 600px;
+  background-color: rgba(247, 0, 0, 0);
+  z-index: 0;
+  top: 1750px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.Quem-nos-somos p {
+  top: 300px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+   .Divisão-de-tela2 {
+ position: absolute;
+      width: 1351px;
+      height: 2px;
+      background-color: rgb(80, 80, 80);
+      z-index: 0;
+      top: 2500px;
+    }
+
+.Oque-e {
+  position: absolute;
+  width: 1351px;
+  height: 600px;
+  background-color: rgba(241, 0, 0, 0);
+  z-index: 0;
+  top: 2700px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.Oque-e p {
+  top: 300px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+    
+    @media (max-width: 768px) {
+      .nav-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+      }
+
+      nav {
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        margin-right: 16px;
+        margin-top: 8px;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .main-content {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topo -->
+  <div class="nav-wrapper">
+    <div class="logo">🐙 <span>U.M.C.A.D</span></div>
+    <nav>
+      <a href="#quem-nos-somos">Sobre-nos</a>
+      <a href="#saibamais">Saiba mais</a>
+      <a href="../login-registrar/public/register.html">Registrar-se</a>
+      <a href="../login-registrar/public/login.html">Login</a>
+    </nav>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <small></small>
+    <h2>Um dispositivo para coletar todas as informações do seu campo sem voce precisar sair do conforto de casa</h2>
+    <p>Visualize a informações de seu campo sem precisar abaixar nada, é sem sair do conforto de sua casa.</p>
+    <div class="buttons">
+      <a href="../Dados/public/index.html" class="btn-download">📡 Acesse aqui os dados de seu campo</a>
+      <a href="#" class="btn-github">Veja o Codigo no GitHub</a>
+    </div>
+  </div>
+
+  <!-- Imagem com quadrado preto atrás -->
+  <div class="frosted-wrapper">
+    <div class="frosted-background"></div>
+    <img src="imagens/imagem teste.jpg" alt="Imagem do jogo" class="featured-image" />
+  </div>
+ <div class="Novo-estilo"></div>
+ <div class="Divisão-de-tela"></div>
+ <div class="Quem-nos-somos" id="quem-nos-somos">
+  <div class="texto">      
+<h1>Quem nos somos?</h1>
+<br>
+<p><b>
+    Somos os idealizadores do projeto U.M.C.A.D., unidos pela vontade de inovar e criar soluções práticas para o dia a dia.<br><br>
+    Cada integrante teve um papel essencial na construção do projeto:<br>
+    • Marcos Vinícius foi o cérebro por trás da programação dos dispositivos, garantindo que a parte técnica funcionasse com precisão.<br>
+    • Miguel Augusto cuidou do site com dedicação, desenvolvendo tanto sua estrutura quanto o design visual, pensando na melhor experiência para o usuário.<br>
+    • Júlio César assumiu a função de coordenador do grupo e também contribuiu diretamente na montagem e no funcionamento da parte eletrônica.<br>
+    • Andrey Aparecido teve papel fundamental nas apresentações do projeto e no suporte à gestão, ajudando a manter tudo organizado e bem representado.<br><br>
+    Juntos, fazemos nossas habilidades de transformar ideias em realidade.
+  </b></p>
+  </div>
+ </div>
+
+<div class="Divisão-de-tela2"></div>
+
+<div class="Oque-e" id="saibamais">
+
+ <div class="texto">      
+
+   <h1>Oque é o U.M.C.A.D.?</h1>
+   <br>
+   <p><b>
+    O projeto U.M.C.A.D. foi desenvolvido com o objetivo de facilitar a comunicação entre o meio rural e o meio urbano por meio de tecnologia acessível e eficiente.
+Utilizando um transmissor compacto e de fácil manuseio, é possível obter dados importantes do ambiente em tempo real. Ao posicionar o dispositivo em um local desejado, ele realiza medições como:<br>
+• presença de gases que podem causar queimadas ou prejudicar plantas e seres humanos,<br>
+• detecção de chuva,<br>
+• umidade do ar e do solo,<br>
+• além da temperatura local.<br><br>
+Essas informações podem ser consultadas diretamente no local ou enviadas automaticamente para um receptor com alcance de até 1 km de distância. Todos os dados coletados são reunidos em uma única plataforma: um site intuitivo, que pode ser acessado de qualquer lugar, facilitando o monitoramento remoto.<br><br>
+U.M.C.A.D. é a união entre tecnologia, praticidade e conectividade para melhorar o cuidado com o campo, mesmo à distância.
+   </b></p>
+  </div>
+
+
+
+</div>
+
+
+</body>
+</html>
