@@ -1,0 +1,24 @@
+{
+  "name": "sistema-login",
+  "version": "1.0.0",
+  "description": "Sistema de login com e-mail, senha e integração com Google",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "MARCOS",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^6.9.11",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}
+

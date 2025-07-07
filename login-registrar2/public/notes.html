@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bloco de Notas</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 16px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f1f1f1;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📝 Bloco de Notas</h2>
+    <textarea id="nota" placeholder="Escreva sua nota aqui..."></textarea>
+    <button id="btnSalvar">Salvar Nota</button>
+
+    <h3>Notas Salvas</h3>
+    <ul id="listaNotas"></ul>
+  </div>
+
+  <script>
+    async function salvarNota() {
+      const content = document.getElementById("nota").value;
+      if (!content) return alert("Digite algo para salvar.");
+
+      await fetch('/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+
+      document.getElementById("nota").value = "";
+      carregarNotas();
+    }
+
+    async function carregarNotas() {
+      try {
+        const res = await fetch('/notes');
+        if (res.status !== 200) return alert("❌ Acesso negado. Faça login.");
+        const notas = await res.json();
+
+        const lista = document.getElementById("listaNotas");
+        lista.innerHTML = "";
+        notas.forEach(nota => {
+          const li = document.createElement("li");
+          li.textContent = `${nota.created_at.split('T')[0]}: ${nota.content}`;
+          lista.appendChild(li);
+        });
+      } catch (err) {
+        alert("Erro ao buscar notas");
+      }
+    }
+
+    document.getElementById("btnSalvar").addEventListener("click", salvarNota);
+    carregarNotas();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro de Conta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      width: 100%;
+      max-width: 400px;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #mensagem {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>🔐 Criar Senha</h2>
+    <input type="password" id="senha" placeholder="Digite sua senha" required />
+    <button onclick="registrar()">Cadastrar</button>
+    <div id="mensagem"></div>
+  </div>
+
+  <script>
+    async function registrar() {
+      const senha = document.getElementById('senha').value;
+      const mensagem = document.getElementById('mensagem');
+
+      if (!senha) {
+        mensagem.textContent = 'Digite uma senha.';
+        mensagem.style.color = 'red';
+        return;
+      }
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: senha })
+      });
+
+      const texto = await res.text();
+      mensagem.textContent = texto;
+      mensagem.style.color = res.ok ? 'green' : 'red';
+
+      if (res.ok) {
+        setTimeout(() => window.location.href = '/login.html', 2000);
+      }
+    }
+  </script>
+
+</body>
+</html>
+

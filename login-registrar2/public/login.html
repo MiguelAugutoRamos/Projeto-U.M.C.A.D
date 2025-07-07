@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login com E-mail ou Google</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #mensagem {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .link a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+    .google-button {
+      display: inline-block;
+      background-color: #DB4437;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .google-button:hover {
+      background-color: #c1351d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <form id="loginForm">
+      <h2>🔑 Login</h2>
+      <input type="email" id="email" placeholder="Seu e-mail" required />
+      <input type="password" id="password" placeholder="Sua senha" required />
+      <button type="submit">Entrar com E-mail</button>
+      <p id="mensagem"></p>
+    </form>
+
+    <a href="/auth/google" class="google-button">🔒 Entrar com Google</a>
+
+    <div class="link">
+      <p>Não tem uma conta? <a href="/cadastro.html">Cadastre-se aqui</a></p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const mensagem = document.getElementById('mensagem');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      console.log("📤 Tentando login com:", email);
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const text = await response.text();
+        console.log("📬 Resposta do servidor:", response.status, text);
+
+        mensagem.textContent = text;
+        mensagem.style.color = response.ok ? 'green' : 'red';
+
+        if (response.ok) {
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 1500);
+        }
+
+      } catch (error) {
+        console.error("❌ Erro na requisição:", error);
+        mensagem.textContent = 'Erro ao conectar com o servidor.';
+        mensagem.style.color = 'red';
+      }
+    });
+  </script>
+
+</body>
+</html>
+
