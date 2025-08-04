@@ -1,0 +1,31 @@
+directories:
+  output: dist
+  buildResources: assets
+productName: UMCAD
+appId: com.umcad.app
+copyright: © 2025 UMCAD
+compression: maximum
+asar: true
+extraResources:
+  - from: leitura
+    to: leitura
+  - from: leitura/node_modules
+    to: leitura/node_modules
+  - from: assets
+    to: assets
+artifactName: ${productName}-Setup-${version}.${ext}
+files:
+  - filter:
+      - '**/*'
+      - '!node_modules/@electron/rebuild'
+linux:
+  maintainer: MARCOS VINÍCIUS DA SILVA MANOEL <marcos.manoel26@escola.pr.gov.br>
+  icon: assets/icon.png
+  category: Utility
+  target:
+    - AppImage
+    - deb
+win:
+  icon: assets/icon.ico
+  target: nsis
+electronVersion: 37.2.0

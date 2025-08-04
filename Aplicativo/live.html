@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Visão Ao Vivo</title>
+  <style>
+    body {
+      margin:0; padding:30px;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(to bottom right,#1c1c1c,#003a46);
+      color:#fff;
+      display:flex; flex-direction:column;
+      align-items:center;
+    }
+    h1 { margin-bottom:20px; }
+    .card {
+      background:#111; padding:20px; border-radius:8px;
+      box-shadow:0 0 10px rgba(0,0,0,0.5);
+      width:100%; max-width:400px;
+    }
+    .card div { margin:8px 0; font-size:1.1rem; }
+    .card div span { font-weight:bold; margin-left:8px; }
+    button {
+      margin-top:20px; padding:10px 16px;
+      background:#29b6f6; color:#000; border:none;
+      border-radius:6px; cursor:pointer;
+    }
+    button:hover { background:#1e90ff; }
+  </style>
+</head>
+<body>
+
+  <h1>📡 Dados Ao Vivo</h1>
+  <div class="card">
+    <div>Temp:        <span id="liveTemp">--</span></div>
+    <div>Umid. Ar:    <span id="liveUmidAr">--</span></div>
+    <div>Umid. Solo:  <span id="liveUmidSolo">--</span></div>
+    <div>Gas Inflamável:<span id="liveGasInf">--</span></div>
+    <div>Gas Tóxico:  <span id="liveGasTox">--</span></div>
+    <div>Chuva:       <span id="liveChuva">--</span></div>
+    <div>Horário:     <span id="liveHora">--</span></div>
+  </div>
+  <button onclick="voltar()">🔙 Voltar</button>
+
+<script>
+  const { ipcRenderer } = require('electron');
+
+  window.addEventListener('DOMContentLoaded', () => {
+    function voltar() {
+      ipcRenderer.send('abrir-index');
+    }
+    window.voltar = voltar;
+
+    ipcRenderer.on('leitura-live', (_, l) => {
+      console.log('📡 Dados recebidos:', l);
+      document.getElementById('liveTemp').innerText      = l.temp + ' °C';
+      document.getElementById('liveUmidAr').innerText    = l.umidAr  + ' %';
+      document.getElementById('liveUmidSolo').innerText  = l.umidSolo + ' %';
+      document.getElementById('liveGasInf').innerText    = l.gasInflamavel; + ' %'
+      document.getElementById('liveGasTox').innerText    = l.gasToxico + ' %';
+      document.getElementById('liveChuva').innerText     = l.estaChovendo ? 'Sim' : 'Não';
+      document.getElementById('liveHora').innerText      = new Date().toLocaleTimeString();
+    });
+  });
+</script>
+
+</body>
+</html>
+

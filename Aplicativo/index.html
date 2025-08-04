@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>U.M.C.A.D</title>
+  <style>
+    body { margin:0; padding:40px; font-family:Arial,sans-serif;
+      background:linear-gradient(to bottom right,#1c1c1c,#003a46);
+      color:#fff; display:flex; flex-direction:column;
+      align-items:center; height:100vh;
+    }
+    h1 { margin-bottom:30px; font-size:2rem; }
+    .panel {
+      background:rgba(0,0,0,0.3); padding:30px;
+      border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.4);
+      max-width:400px; width:100%;
+    }
+    label { font-weight:bold; display:block; margin:10px 0 6px; }
+    input, p {
+      width:94%; padding:12px; font-size:16px; border:none;
+      border-radius:8px; margin-bottom:20px; background:#111; color:#0ff;
+    }
+    p#emailPartial { background:transparent; cursor:default; }
+    button {
+      width:100%; padding:12px; font-size:16px; border:none;
+      border-radius:8px; margin-bottom:14px; background:#29b6f6;
+      color:#000; font-weight:bold; cursor:pointer; transition:.3s;
+    }
+    button:hover { background:#1e90ff; }
+    p#status { text-align:center; font-weight:bold; min-height:1.2em; }
+  </style>
+</head>
+<body>
+  <h1>UMCAD</h1>
+  <div class="panel">
+    <!-- navegação -->
+    <button onclick="abrirLive()">📡 Ver Ao Vivo</button>
+    <button onclick="abrirHistorico()">📋 Ver Histórico</button>
+
+    <!-- Token -->
+    <label for="tokenInput">🔑 Informe seu Token</label>
+    <input id="tokenInput" placeholder="3fh1a9s8..." />
+
+    <!-- E-mail parcial -->
+    <label>E-mail (6 primeiros chars)</label>
+    <p id="emailPartial">carregando…</p>
+
+    <!-- ações -->  
+    <button onclick="salvarToken()">💾 Salvar Token</button>
+    <button id="botaoLeitura" onclick="alternarLeitura()">▶️ Iniciar</button>
+
+    <!-- feedback -->
+    <p id="status"></p>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
+

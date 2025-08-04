@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hydra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+
+/* Aba de usuário ao passar o mouse */
+.usuario-logado {
+  position: relative;
+  display: flex; /* para alinhar o texto e dropdown horizontalmente */
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.aba-usuario {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  width: 220px; /* garante que os botões fiquem na mesma largura */
+}
+
+.usuario-logado:hover .aba-usuario,
+.usuario-logado.ativo .aba-usuario {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.usuario-logado:hover .aba-usuario,
+.aba-usuario:hover {
+  display: block;
+}
+
+.aba-usuario button {
+  background-color: transparent;
+  border: none;
+  color: #ff5555;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 6px;
+  text-align: left;
+}
+
+.aba-usuario button:hover {
+  text-decoration: underline;
+}
+
+    * {
+      margin: 1;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #0e1522, #00616C);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .nav-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      background-color: rgb(17, 17, 17);
+      border: 1px solid rgba(255, 255, 255, 0.171);
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      gap: 8px;
+    }
+
+    .logo span {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #c3c3c3;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .main-content {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 100px;
+    }
+
+    small {
+      color: #7edfff;
+      font-weight: 400;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #c2c2c2;
+      font-weight: 300;
+      margin-bottom: 34px;
+      line-height: 1.6;
+      letter-spacing: 0.2px;
+    }
+
+    .buttons a {
+      display: inline-block;
+      padding: 14px 28px;
+      margin: 8px;
+      border-radius: 16px;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: 0.25s ease;
+    }
+
+    .btn-download {
+      background-color: #29b6f6;
+      color: #000;
+    }
+
+    .btn-github {
+      background-color: transparent;
+      color: #29b6f6;
+      border: 2px solid #29b6f6;
+    }
+
+    /* Imagem com quadrado preto centralizado atrás */
+    .frosted-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 60px;
+    }
+
+.Novo-estilo {
+     position: absolute;
+      width: 1351px;
+      height: 2700px;
+      background-color: rgb(17, 17, 17);
+      z-index: 0;
+      top: 800px;
+    }
+
+    .frosted-background {
+      position: absolute;
+      width: 1220px;
+      height: 920px;
+      background-color: rgba(0, 0, 0, 0.205);
+      z-index: 0;
+      border-radius: 16px;
+      border-color: #000;
+      border: 1px solid black;
+    }
+
+    .featured-image {
+      position: relative;
+      z-index: 1;
+      width: 1200px;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .Divisão-de-tela {
+ position: absolute;
+      width: 1351px;
+      height: 2px;
+      background-color: rgb(80, 80, 80);
+      z-index: 0;
+      top: 1600px;
+    }
+
+.Quem-nos-somos {
+  position: absolute;
+  width: 1351px;
+  height: 600px;
+  background-color: rgba(247, 0, 0, 0);
+  z-index: 0;
+  top: 1750px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.Quem-nos-somos p {
+  top: 300px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+   .Divisão-de-tela2 {
+ position: absolute;
+      width: 1351px;
+      height: 2px;
+      background-color: rgb(80, 80, 80);
+      z-index: 0;
+      top: 2500px;
+    }
+
+.Oque-e {
+  position: absolute;
+  width: 1351px;
+  height: 600px;
+  background-color: rgba(241, 0, 0, 0);
+  z-index: 0;
+  top: 2700px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.Oque-e p {
+  top: 300px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+    
+    @media (max-width: 768px) {
+      .nav-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+      }
+
+      nav {
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        margin-right: 16px;
+        margin-top: 8px;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .main-content {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topo -->
+  <div class="nav-wrapper">
+    <div class="logo">🐙 <span>U.M.C.A.D</span></div>
+    <nav>
+      <a href="#quem-nos-somos">Sobre-nos</a>
+      <a href="#saibamais">Saiba mais</a>
+      <a href="register.html">Registrar-se</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <small></small>
+    <h2>Um dispositivo para coletar todas as informações do seu campo sem voce precisar sair do conforto de casa</h2>
+    <p>Visualize a informações de seu campo sem precisar abaixar nada, é sem sair do conforto de sua casa.</p>
+    <div class="buttons">
+      <a href="/dados" class="btn-download">📡 Acesse aqui os dados de seu campo</a>
+      <a href="https://github.com/MiguelAugutoRamos/Site-U.M.C.A.D" class="btn-github">Veja o Codigo no GitHub</a>
+    </div>
+  </div>
+
+  <!-- Imagem com quadrado preto atrás -->
+  <div class="frosted-wrapper">
+    <div class="frosted-background"></div>
+    <img src="imagens/imagem teste.jpg" alt="Imagem do jogo" class="featured-image" />
+  </div>
+ <div class="Novo-estilo"></div>
+ <div class="Divisão-de-tela"></div>
+ <div class="Quem-nos-somos" id="quem-nos-somos">
+  <div class="texto">      
+<h1>Quem nos somos?</h1>
+<br>
+<p><b>
+    Somos os idealizadores do projeto U.M.C.A.D., unidos pela vontade de inovar e criar soluções práticas para o dia a dia.<br><br>
+    Cada integrante teve um papel essencial na construção do projeto:<br>
+    • Marcos Vinícius foi o cérebro por trás da programação dos dispositivos, garantindo que a parte técnica funcionasse com precisão.<br>
+    • Miguel Augusto cuidou do site com dedicação, desenvolvendo tanto sua estrutura quanto o design visual, pensando na melhor experiência para o usuário.<br>
+    • Júlio César assumiu a função de coordenador do grupo e também contribuiu diretamente na montagem e no funcionamento da parte eletrônica.<br>
+    • Andrey Aparecido teve papel fundamental nas apresentações do projeto e no suporte à gestão, ajudando a manter tudo organizado e bem representado.<br><br>
+    Juntos, fazemos nossas habilidades de transformar ideias em realidade.
+  </b></p>
+  </div>
+ </div>
+
+<div class="Divisão-de-tela2"></div>
+
+<div class="Oque-e" id="saibamais">
+
+ <div class="texto">      
+
+   <h1>Oque é o U.M.C.A.D.?</h1>
+   <br>
+   <p><b>
+    O projeto U.M.C.A.D. foi desenvolvido com o objetivo de facilitar a comunicação entre o meio rural e o meio urbano por meio de tecnologia acessível e eficiente.
+Utilizando um transmissor compacto e de fácil manuseio, é possível obter dados importantes do ambiente em tempo real. Ao posicionar o dispositivo em um local desejado, ele realiza medições como:<br>
+• presença de gases que podem causar queimadas ou prejudicar plantas e seres humanos,<br>
+• detecção de chuva,<br>
+• umidade do ar e do solo,<br>
+• além da temperatura local.<br><br>
+Essas informações podem ser consultadas diretamente no local ou enviadas automaticamente para um receptor com alcance de até 1 km de distância. Todos os dados coletados são reunidos em uma única plataforma: um site intuitivo, que pode ser acessado de qualquer lugar, facilitando o monitoramento remoto.<br><br>
+U.M.C.A.D. é a união entre tecnologia, praticidade e conectividade para melhorar o cuidado com o campo, mesmo à distância.
+   </b></p>
+  </div>
+
+
+
+</div>
+
+<script>
+  // Cria o botão ⚙️ Configuração para inserir no dropdown
+function criarBotaoConfiguracao() {
+  // <<< esquecimento aqui — precisamos criar o botão antes de usá-lo
+  const btn = document.createElement('button');
+  btn.textContent = '⚙️ Configuração';
+Object.assign(btn.style, {
+  display: 'block',
+  width: '100%',
+  textAlign: 'center',
+  padding: '6px 10px',
+  backgroundColor: 'transparent',
+  color: '#c3faff',
+  fontWeight: 'bold',
+  border: 'none',
+  borderRadius: '6px',
+  marginBottom: '6px',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  boxSizing: 'border-box'
+});
+  btn.onmouseenter = () => btn.style.textDecoration = 'underline';
+  btn.onmouseleave = () => btn.style.textDecoration = 'none';
+
+  btn.onclick = async () => {
+    try {
+      const res  = await fetch('/token-logado', { credentials: 'include' });
+      const { token } = await res.json();
+
+      const popup = document.createElement('div');
+      Object.assign(popup.style, {
+        position: 'fixed',
+        top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: '#111',
+        border: '1px solid #444',
+        padding: '20px',
+        borderRadius: '8px',
+        color: '#c3faff',
+        zIndex: '9999',
+        textAlign: 'center',
+        minWidth: '320px'
+      });
+
+popup.innerHTML = `
+  <h3>⚙️ Configurações</h3>
+
+  <!-- Token e cópia -->
+  <div style="display:flex; align-items:center; margin-bottom:12px;">
+    <input id="tokenInput" type="text" value="${token}" readonly
+           style="flex:1;padding:6px;background:#000;color:#0ff;border:1px solid #555;border-radius:4px;">
+    <button id="copiarBtn" style="margin-left:8px;padding:6px 10px;background:#29b6f6;border:none;border-radius:4px;font-weight:bold;">
+      📑
+    </button>
+  </div>
+
+  <button id="regenBtn" style="padding:8px 14px;background:#29b6f6;border:none;border-radius:4px;color:#000;font-weight:bold;">
+    🔄 Regenerar token
+  </button>
+
+  <hr style="margin:18px 0;border-color:#444;">
+
+  <!-- Delay -->
+  <label for="delayInput" style="display:block;margin-bottom:6px;font-weight:bold;">⏱ Definir Delay (minutos)</label>
+  <input id="delayInput" type="number" placeholder="Ex: 10"
+         style="width:100%;padding:6px;background:#000;color:#7edfff;border:1px solid #555;border-radius:4px;margin-bottom:10px;">
+  <button id="salvarDelay" style="padding:8px 14px;background:#7edfff;border:none;border-radius:4px;color:#000;font-weight:bold;">
+    💾 Salvar Delay
+  </button>
+  <p id="mensagemDelay" style="margin-top:10px;font-weight:bold;"></p>
+
+  <hr style="margin:18px 0;border-color:#444;">
+
+  <!-- NOVOS BOTÕES -->
+  <button id="mudarSenhaBtn" style="padding:8px 14px;background:#ffcc00;border:none;border-radius:4px;color:#000;font-weight:bold; margin-bottom:8px;">
+    🔐 Mudar Senha
+  </button>
+
+<button id="apagarHistoricoBtn" 
+style="padding:8px 14px;height:40px;background:#ffcc00;border:none;border-radius:4px;color:#000;font-weight:bold;line-height:1.2;margin-bottom:8px;width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;">
+  🗑 Apagar Histórico
+</button>
+
+
+  <div style="margin-top:16px;">
+    <button id="closeBtn" style="padding:6px 12px;background:#444;border:none;border-radius:4px;color:#fff;">
+      Fechar
+    </button>
+  </div>
+`;
+
+
+      document.body.appendChild(popup);
+
+      // handlers
+      popup.querySelector('#copiarBtn').onclick = () => {
+        popup.querySelector('#tokenInput').select();
+        document.execCommand('copy');
+        alert('✅ Token copiado!');
+      };
+      popup.querySelector('#regenBtn').onclick = async () => {
+        const r = await fetch('/regenerar-token', { method:'POST', credentials:'include' });
+        const j = await r.json();
+        popup.querySelector('#tokenInput').value = j.token;
+        alert('🔐 Novo token gerado!');
+      };
+document.getElementById('mudarSenhaBtn').onclick = () => {
+  window.location.href = '/verificar.html';
+};
+document.getElementById('apagarHistoricoBtn').onclick = async () => {
+  if (!confirm('Tem certeza que deseja apagar todo o histórico da conta?')) return;
+
+  const res = await fetch('/token-logado', { credentials: 'include' });
+  const { token } = await res.json();
+
+  const resp = await fetch('/limpar-historico', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  });
+
+  const msg = await resp.text();
+  alert(msg);
+};
+
+      popup.querySelector('#salvarDelay').onclick = async () => {
+        const novoDelay = parseInt(popup.querySelector('#delayInput').value);
+        const msg = popup.querySelector('#mensagemDelay');
+        if (isNaN(novoDelay) || novoDelay < 5) {
+          msg.textContent = '⚠️ Insira valor ≥ 5';
+          msg.style.color = 'orange';
+          return;
+        }
+        try {
+          const r2 = await fetch('/configurar-delay', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            credentials:'include',
+            body: JSON.stringify({ novoDelay })
+          });
+          const txt = await r2.text();
+          msg.textContent = txt;
+          msg.style.color = r2.ok ? 'green' : 'red';
+        } catch {
+          msg.textContent = '❌ Falha ao salvar';
+          msg.style.color = 'red';
+        }
+      };
+      popup.querySelector('#closeBtn').onclick = () => popup.remove();
+
+    } catch {
+      alert('⚠️ Não foi possível abrir configurações');
+    }
+  };
+
+  return btn;
+}
+
+  // Verifica sessão e monta dropdown de usuário
+  async function verificarLogin() {
+    const loginLink    = document.querySelector('a[href="login.html"]');
+    const registerLink = document.querySelector('a[href="register.html"]');
+    const botaoDados   = document.querySelector('.btn-download');
+    const nav          = document.querySelector('nav');
+
+    try {
+      const res  = await fetch('/usuario-logado', { credentials: 'include' });
+      const data = await res.json();
+
+      if (data.logado) {
+        // Esconde links de login/registro
+        if (loginLink)    loginLink.remove();
+        if (registerLink) registerLink.remove();
+        // Mostra botão de dados
+        if (botaoDados) botaoDados.style.display = 'inline-block';
+
+        // Cria elemento pai
+        const userWrap = document.createElement('div');
+        userWrap.classList.add('usuario-logado');
+
+        // Label com e-mail
+        const lbl = document.createElement('span');
+        lbl.textContent = `🪪 ${data.email}`;
+        Object.assign(lbl.style, { fontWeight: 'bold', color: '#7edfff' });
+
+        // Dropdown oculto
+        const aba = document.createElement('div');
+        aba.classList.add('aba-usuario');
+
+        // 📎 Copiar Token direto
+        const copiarBtn = document.createElement('button');
+        copiarBtn.textContent = '📎 Copiar Token';
+Object.assign(copiarBtn.style, {
+  display: 'block',
+  width: '100%',
+  textAlign: 'center',
+  padding: '6px 10px',
+  backgroundColor: 'transparent',
+  color: '#FFD700',
+  fontWeight: 'bold',
+  border: 'none',
+  borderRadius: '6px',
+  marginBottom: '6px',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  boxSizing: 'border-box'
+});
+        copiarBtn.onclick = async () => {
+          try {
+            const r = await fetch('/token-logado', { credentials: 'include' });
+            const { token } = await r.json();
+            const input = document.createElement('input');
+            input.value = token;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            input.remove();
+            alert('✅ Token copiado!');
+          } catch {
+            alert('❌ Erro ao copiar token');
+          }
+        };
+        aba.appendChild(copiarBtn);
+
+        // ⚙️ Configuração
+        aba.appendChild(criarBotaoConfiguracao());
+
+        // 🔴 Sair da conta
+        const btnOut = document.createElement('button');
+        btnOut.textContent = '🔴 Sair da conta';
+Object.assign(btnOut.style, {
+  display: 'block',
+  width: '100%',
+  textAlign: 'center',
+  padding: '6px 10px',
+  backgroundColor: 'transparent',
+  color: '#ff5555',
+  fontWeight: 'bold',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  boxSizing: 'border-box'
+});
+        btnOut.onclick = () => {
+          fetch('/logout', { method: 'POST' })
+            .then(() => window.location.href = '/login.html')
+            .catch(() => alert('Erro ao sair da conta'));
+        };
+        aba.appendChild(btnOut);
+
+        // Monta no DOM
+        userWrap.appendChild(lbl);
+        userWrap.appendChild(aba);
+        nav.appendChild(userWrap);
+
+        // Hover para mostrar e esconder a aba
+        let hideTimeout;
+        userWrap.addEventListener('mouseenter', () => {
+          userWrap.classList.add('ativo');
+          clearTimeout(hideTimeout);
+        });
+        userWrap.addEventListener('mouseleave', () => {
+          hideTimeout = setTimeout(() => userWrap.classList.remove('ativo'), 250);
+        });
+
+      } else {
+        if (botaoDados) botaoDados.style.display = 'none';
+      }
+    } catch (err) {
+      console.error('Erro ao verificar login:', err);
+    }
+  }
+
+  window.onload = verificarLogin;
+</script>
+
+</body>
+</html>

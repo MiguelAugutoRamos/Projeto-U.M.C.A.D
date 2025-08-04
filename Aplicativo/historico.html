@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Histórico de Leituras</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      margin: 0;
+    }
+    .header .config {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .table-container {
+      flex: 1;
+      overflow: auto;
+    }
+    table {
+      border-collapse: collapse;
+      background-color: #111;
+      min-width: 800px;
+      zoom: 1;
+      transform-origin: 0 0;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      text-align: center;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #29b6f6;
+      color: #000;
+      z-index: 2;
+      cursor: pointer;
+    }
+    thead th:hover {
+      background-color: #1e90ff;
+    }
+    tr:hover {
+      background-color: #222;
+    }
+    .footer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .footer button {
+      padding: 10px 16px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #29b6f6;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .footer button:hover {
+      background-color: #1e90ff;
+    }
+
+    /* Modal de configuração */
+    #configModal {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #000;
+      z-index: 10;
+      width: 300px;
+    }
+    #configModal label,
+    #configModal button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      color: #fff;
+    }
+    #configModal input[type="number"],
+    #configModal input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      background: #111;
+      color: #0ff;
+      margin-top: 4px;
+    }
+    #configModal .clear {
+      background: red;
+      color: #fff;
+    }
+
+    /* Filtro por token */
+    #filterPanel {
+      display: none;
+      margin: 8px 0;
+    }
+    #filterPanel button {
+      margin-top: 4px;
+      background: #29b6f6;
+      color: #000;
+      border: none;
+      padding: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: auto;
+    }
+    #filterPanel button:hover {
+      background: #1e90ff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>📋 Histórico de Leituras</h1>
+    <span class="config" onclick="openConfig()">⚙️</span>
+  </div>
+
+  <div class="table-container">
+    <table id="tabelaLeituras">
+      <thead>
+        <tr>
+          <th data-order="desc">Temp</th>
+          <th data-order="desc">Umid. Ar</th>
+          <th data-order="desc">Umid. Solo</th>
+          <th data-order="desc">Gas Inflamável</th>
+          <th data-order="desc">Gas Tóxico</th>
+          <th data-order="desc">Chuva</th>
+          <th data-order="desc">Horário</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <button onclick="zoomOut()">➖ Zoom –</button>
+    <button onclick="voltar()">🔙 Voltar</button>
+    <button onclick="zoomIn()">➕ Zoom +</button>
+  </div>
+
+  <div id="configModal">
+    <!-- Filtro por token -->
+    <label>
+      <input type="checkbox" id="toggleFilter" />
+      Filtrar por token específico
+    </label>
+    <div id="filterPanel">
+      <input id="tokenInput" type="text" placeholder="Digite o token desejado" />
+      <button id="applyFilter">✅ Aplicar</button>
+      <button id="clearFilter">🗑 Limpar filtro</button>
+    </div>
+
+    <!-- Intervalo de gravação -->
+    <label>
+      Intervalo de registro (minutos, ≥ 1):
+      <input id="intervalInput" type="number" min="1" />
+    </label>
+
+    <button onclick="saveConfig()">💾 Salvar configurações</button>
+    <button class="clear" onclick="clearHistory()">🗑 Limpar Histórico</button>
+    <button onclick="closeConfig()">✖️ Fechar</button>
+  </div>
+
+<script>
+  const { ipcRenderer } = require('electron');
+  const tabela = document.getElementById('tabelaLeituras');
+  let zoomLevel = 1;
+  let dados = [];
+  let filterToken = '';
+
+  // UI elements do filtro
+  const toggleFilter = document.getElementById('toggleFilter');
+  const filterPanel = document.getElementById('filterPanel');
+  const tokenInput = document.getElementById('tokenInput');
+  const applyFilter = document.getElementById('applyFilter');
+  const clearFilter = document.getElementById('clearFilter');
+
+  // Zoom
+  function zoomIn() {
+    zoomLevel = Math.min(2, zoomLevel + 0.1);
+    tabela.style.zoom = zoomLevel;
+  }
+  function zoomOut() {
+    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+    tabela.style.zoom = zoomLevel;
+  }
+  function voltar() {
+    ipcRenderer.send('abrir-index');
+  }
+
+  // Renderizar tabelas
+  function renderizar() {
+    const tbody = tabela.tBodies[0];
+    tbody.innerHTML = '';
+    dados.forEach(l => {
+      const chove = l.estaChovendo === 'true' || l.estaChovendo === true;
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${l.temp}</td>
+          <td>${l.umidAr}</td>
+          <td>${l.umidSolo}</td>
+          <td>${l.gasInflamavel}</td>
+          <td>${l.gasToxico}</td>
+          <td>${chove ? 'Sim' : 'Não'}</td>
+          <td>${new Date(l.timestamp).toLocaleString()}</td>
+        </tr>
+      `);
+    });
+  }
+
+  // Carregar histórico
+  async function carregarHistorico() {
+    dados = await ipcRenderer.invoke('get-historico');
+    renderizar();
+  }
+
+  // Limpar histórico
+  function clearHistory() {
+    ipcRenderer.send('clear-historico');
+  }
+  ipcRenderer.on('historico-limpo', () => {
+    dados = [];
+    renderizar();
+  });
+
+  // Ordenação por coluna com ícones 🔼🔽
+  document.querySelectorAll('#tabelaLeituras thead th').forEach((th, idx) => {
+    th.addEventListener('click', () => {
+      const novaOrdem = th.dataset.order === 'asc' ? 'desc' : 'asc';
+      th.dataset.order = novaOrdem;
+
+      // Limpa ícones de todas as colunas
+      document.querySelectorAll('#tabelaLeituras thead th').forEach(c => {
+        c.textContent = c.textContent.replace(' 🔼', '').replace(' 🔽', '');
+      });
+
+      // Adiciona ícone visual à coluna clicada
+      const textoOriginal = th.textContent.replace(' 🔼', '').replace(' 🔽', '');
+      th.textContent = textoOriginal + (novaOrdem === 'asc' ? ' 🔼' : ' 🔽');
+
+      // Ordena as linhas
+      const rows = Array.from(tabela.tBodies[0].rows);
+      rows.sort((a, b) => {
+        let va = a.cells[idx].innerText;
+        let vb = b.cells[idx].innerText;
+
+        if (idx >= 0 && idx <= 4) {
+          va = parseFloat(va);
+          vb = parseFloat(vb);
+        } else if (idx === 5) {
+          va = va === 'Sim' ? 1 : 0;
+          vb = vb === 'Sim' ? 1 : 0;
+        } else if (idx === 6) {
+          va = new Date(va);
+          vb = new Date(vb);
+        }
+
+        return (va > vb ? 1 : -1) * (novaOrdem === 'asc' ? 1 : -1);
+      });
+
+      const tbody = tabela.tBodies[0];
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
+
+  // Modal de configurações
+  function openConfig() {
+    document.getElementById('configModal').style.display = 'block';
+    ipcRenderer.invoke('get-interval').then(i => {
+      document.getElementById('intervalInput').value = i;
+    });
+    ipcRenderer.invoke('get-filter-token').then(token => {
+      filterToken = token;
+      toggleFilter.checked = !!token;
+      filterPanel.style.display = token ? 'block' : 'none';
+      tokenInput.value = token;
+    });
+  }
+  function closeConfig() {
+    document.getElementById('configModal').style.display = 'none';
+  }
+  function saveConfig() {
+    const mins = parseInt(document.getElementById('intervalInput').value, 10) || 1;
+    ipcRenderer.send('set-interval', mins);
+    closeConfig();
+  }
+
+  // Filtro por token
+  toggleFilter.addEventListener('change', () => {
+    const ativo = toggleFilter.checked;
+    filterPanel.style.display = ativo ? 'block' : 'none';
+    if (!ativo) {
+      ipcRenderer.send('set-filter-token', '');
+    }
+  });
+  applyFilter.addEventListener('click', () => {
+    const val = tokenInput.value.trim();
+    ipcRenderer.send('set-filter-token', val);
+  });
+  clearFilter.addEventListener('click', () => {
+    tokenInput.value = '';
+    ipcRenderer.send('set-filter-token', '');
+  });
+  ipcRenderer.on('filter-token-saved', (e, novo) => {
+    filterToken = novo;
+    carregarHistorico();
+  });
+
+  ipcRenderer.on('historico-atualizar', carregarHistorico);
+
+  // Inicialização
+  window.addEventListener('DOMContentLoaded', () => {
+    carregarHistorico();
+  });
+</script>
+
+
+</body>
+</html>
+

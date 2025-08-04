@@ -1,0 +1,68 @@
+{
+  "name": "UMCAD",
+  "version": "0.8.5",
+  "description": "App intermediário para leitura USB do Arduino e envio via ngrok",
+  "main": "main.js",
+  "author": {
+    "name": [
+      "MARCOS",
+      "MIGUEL",
+      "JÚLIO",
+      "ANDREY"
+    ],
+    "email": "marcos.manoel26@escola.pr.gov.br"
+  },
+  "homepage": "https://github.com/seuusuario/umcad",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron --no-sandbox .",
+    "postinstall": "electron-builder install-app-deps && npm install --prefix leitura",
+    "dist": "electron-builder",
+    "build:win": "electron-builder --win nsis --x64",
+    "build:linux": "electron-builder --linux deb --x64",
+    "build": "npm run build:win && npm run build:linux"
+  },
+  "dependencies": {
+    "@serialport/parser-readline": "^10.5.0",
+    "better-sqlite3": "^12.2.0",
+    "express": "^4.18.2",
+    "node-fetch": "^2.7.0",
+    "serialport": "^10.5.0"
+  },
+  "devDependencies": {
+    "electron": "37.2.0",
+    "electron-builder": "26.0.12",
+    "electron-updater": "6.6.2"
+  },
+  "build": {
+    "productName": "UMCAD",
+    "appId": "com.umcad.app",
+    "copyright": "© 2025 UMCAD",
+    "compression": "maximum",
+    "asar": true,
+    "extraResources": [
+      { "from": "leitura",             "to": "leitura" },
+      { "from": "leitura/node_modules", "to": "leitura/node_modules" },
+      { "from": "assets",              "to": "assets" }
+    ],
+    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "files": [
+      "**/*",
+      "!node_modules/@electron/rebuild"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "linux": {
+      "maintainer": "MARCOS VINÍCIUS DA SILVA MANOEL <marcos.manoel26@escola.pr.gov.br>",
+      "icon": "assets/icon.png",
+      "category": "Utility",
+      "target": ["AppImage","deb"]
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": "nsis"
+    }
+  }
+}
+
