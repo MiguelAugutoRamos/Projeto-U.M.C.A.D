@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.6">
+  <title>Monitoramento do Arduino</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <img src="favicon.ico" class="logo-site" alt="Logo">
+    </div>
+
+    <div class="nuvens-container">
+      <div class="coluna">
+        <div class="nuvem">
+          <p class="titulo">Temperatura</p>
+          <span class="valor-sensor" id="temperatura--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Temperatura">
+        </div>
+        <div class="nuvem">
+          <p class="titulo">Gases Tóxicos</p>
+          <span class="valor-sensor" id="gasesToxicos--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Gases Tóxicos">
+        </div>
+        <div class="nuvem">
+          <p class="titulo">Gases Inflamáveis</p>
+          <span class="valor-sensor" id="gasesInflamaveis--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Gases Inflamáveis">
+        </div>
+      </div>
+      <div class="coluna">
+        <div class="nuvem">
+          <p class="titulo">Umidade do Solo</p>
+          <span class="valor-sensor" id="umidadeSolo--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Umidade do Solo">
+        </div>
+        <div class="nuvem">
+          <p class="titulo">Umidade do Ar</p>
+          <span class="valor-sensor" id="umidadeAr--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Umidade do Ar">
+        </div>
+        <div class="nuvem">
+          <p class="titulo">Está Chovendo?</p>
+          <span class="valor-sensor" id="chovendo--span"></span>
+          <img src="imagens/nuvem.png" class="nuvem-img" alt="Chuva">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top: 40px;">
+    <button onclick="abrirHistorico()" style="padding: 12px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">📜 Ver Histórico</button>
+    <button onclick="abrirCulturas()" style="padding: 12px 20px; font-size: 16px; background-color: #ff9800; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">🌱 Culturas</button>
+  </div>
+
+  <div style="text-align:center; margin-top: 20px;">
+    <button onclick="voltarParaInicio()" style="padding: 12px 20px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer;">🔙 Voltar para Início</button>
+  </div>
+
+  <script>
+    let ws;
+    let emailUsuario = "";
+
+    window.onload = async function iniciar() {
+      try {
+        // 🔍 Buscar domínio
+        const protocoloWS = location.protocol === 'https:' ? 'wss' : 'ws';
+        const dominioWebSocket = `${protocoloWS}://${location.host}`;
+        ws = new WebSocket(dominioWebSocket);
+
+
+        const res = await fetch('/usuario-logado');
+        const user = await res.json();
+
+        if (user.logado) {
+          emailUsuario = user.email;
+
+          // 🔌 Conexão com WebSocket (porta deve bater com o servidor)
+          ws = new WebSocket(dominioWebSocket);
+          ws.onopen = () => {
+            ws.send(JSON.stringify({ email: emailUsuario }));
+            console.log("✅ WebSocket conectado");
+          };
+          ws.onmessage = event => {
+            try {
+              const leitura = JSON.parse(event.data);
+              if (leitura && leitura.temp) atualizarPainel(leitura);
+            } catch (e) {
+              console.error('❌ Dados inválidos recebidos:', event.data);
+            }
+          };
+
+
+        } else {
+          alert("⚠️ Faça login para acessar.");
+          window.location.href = "/";
+        }
+      } catch (error) {
+        console.error("❌ Erro na inicialização:", error.message);
+      }
+    };
+
+    // 🔁 Fallback via histórico a cada 5 segundos
+    setInterval(async () => {
+      try {
+        const res = await fetch('/historico');
+        const dados = await res.json();
+        if (dados.length > 0) atualizarPainel(dados[0]);
+      } catch (err) {
+        console.error('❌ Falha ao buscar histórico:', err.message);
+      }
+    }, 5000); // 5 segundos
+
+    function atualizarPainel(leitura) {
+      document.getElementById("temperatura--span").textContent = leitura.temp+" °C";
+      document.getElementById("umidadeAr--span").textContent = leitura.umidAr+" %";
+      document.getElementById("umidadeSolo--span").textContent = leitura.umidSolo+" %";
+      document.getElementById("gasesToxicos--span").textContent = leitura.gasToxico+" %";
+      document.getElementById("gasesInflamaveis--span").textContent = leitura.gasInflamavel+" %";
+      document.getElementById("chovendo--span").textContent = leitura.estaChovendo ? "🌧️ Sim" : "☀️ Não";
+    }
+
+    function abrirHistorico() {
+      window.location.href = "record.html";
+    }
+
+    function abrirCulturas() {
+      window.location.href = "/culturas";
+    }
+
+    function voltarParaInicio() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
+
