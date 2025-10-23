@@ -278,6 +278,11 @@ router.get('/dados', autenticar, (req, res) => {
   res.sendFile(path.join(__dirname, 'public/dados.html'));
 });
 
+// Frontend de culturas
+router.get('/culturas', autenticar, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/culturas.html'));
+});
+
 // dentro do seu createRouter, após definir router.ws:
 router.ws = ws => {
   ws.on('message', async msg => {

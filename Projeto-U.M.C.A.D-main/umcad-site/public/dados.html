@@ -51,7 +51,8 @@
   </div>
 
   <div style="text-align:center; margin-top: 40px;">
-    <button onclick="abrirHistorico()" style="padding: 12px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer;">📜 Ver Histórico</button>
+    <button onclick="abrirHistorico()" style="padding: 12px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">📜 Ver Histórico</button>
+    <button onclick="abrirCulturas()" style="padding: 12px 20px; font-size: 16px; background-color: #ff9800; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">🌱 Culturas</button>
   </div>
 
   <div style="text-align:center; margin-top: 20px;">
@@ -123,6 +124,10 @@
 
     function abrirHistorico() {
       window.location.href = "record.html";
+    }
+
+    function abrirCulturas() {
+      window.location.href = "/culturas";
     }
 
     function voltarParaInicio() {
